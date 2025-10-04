@@ -1,0 +1,78 @@
+Sabse pehle, terminal ya command prompt kholen.
+Project ke liye ek naya directory banayein aur usmein jayein:
+mkdir myProject
+cd myProject
+Ab, React Native CLI ko global install karein (agar aapne pehle se install nahi kiya hai):
+
+npm install -g react-native-cli
+Project ko initialize karein:
+react-native init MyReactNativeApp
+Project directory mein jaayein:
+cd MyReactNativeApp
+Development server ko start karein:
+npx react-native start
+Ek new terminal window/tab open karein aur project ko run karein:
+For Android:
+npx react-native run-android
+For iOS:
+npx react-native run-ios
+
+
+npm list --depth=0
+
+
+
+
+
+for build command
+cd android
+./gradlew assembleRelease
+
+
+
+
+remove nodemoudle folder 
+
+
+Remove-Item -Path node_modules -Recurse -Force
+
+
+
+
+React Native project ko clean karein: Terminal mein 
+cd android && ./gradlew clean && cd .. && npx react-native run-android command run karein (yadi aap Android par kaam kar rahe hain).
+
+map k lia 
+keytool -list -v -keystore "C:\Users\Umm e Hani\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
+
+
+
+Clean and Rebuild: After making the necessary updates, clean your project and then rebuild it to ensure that the changes take effect. You can do this by running the following commands in your project directory:
+
+bash
+Copy code
+cd android
+./gradlew clean
+cd ..
+react-native run-android
+
+
+
+
+
+
+C:\Users\Admin\AppData\Local\Android\Sdk/emulator/emulator -avd Pixel_2_API_29
+
+C:\Users\Admin\AppData\Local\Android\Sdk/emulator/emulator -list-avd
+
+
+
+C:\Users\Admin\AppData\Local\Android\Sdk/emulator/emulator -avd Pixel_XL_API_34
+C:\Users\Admin\AppData\Local\Android\Sdk\emulator\emulator.exe -avd Pixel_XL_API_34 -no-snapshot
+
+
+C:\Users\Umm e Hani\Documents\GitHub\Taverna-app-UI-Building\android\app\build\outputs\apk\release
+
+
+emulator -list-avds
+emulator -avd Pixel_3_API_27 -gpu swiftshader_indirect
