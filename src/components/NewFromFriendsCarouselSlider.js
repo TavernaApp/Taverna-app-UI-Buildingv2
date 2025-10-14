@@ -1,17 +1,24 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, Image, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, {useRef, useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import axios from 'axios';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../css/styles';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import {connect, useSelector, useDispatch} from 'react-redux';
 import StarRating from './StarRating';
-import { BASE_URL } from '@env';
-import { setSelectedBar } from '../reducers/anotherReducer';
+import {BASE_URL} from '@env';
+import {setSelectedBar} from '../reducers/anotherReducer';
 import Geolocation from '@react-native-community/geolocation';
 
-const NewFromFriendsCarouselSlider = ({ userData, refreshing, onRefresh }) => {
+const NewFromFriendsCarouselSlider = ({userData, refreshing, onRefresh}) => {
   const carouselRef = useRef(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const [recentVisits, setRecentVisits] = useState([]);
@@ -26,17 +33,17 @@ const NewFromFriendsCarouselSlider = ({ userData, refreshing, onRefresh }) => {
   const fetchUserLocation = () => {
     Geolocation.getCurrentPosition(
       position => {
-        const { latitude, longitude } = position.coords;
-        setRegion({ latitude, longitude });
+        const {latitude, longitude} = position.coords;
+        setRegion({latitude, longitude});
       },
       error => {
-        console.error('Error fetching user location:', error);
-      }
+        setRegion(null);
+      },
     );
   };
 
   const haversineDistance = (coords1, coords2) => {
-    const toRad = (value) => (value * Math.PI) / 180;
+    const toRad = value => (value * Math.PI) / 180;
 
     const lat1 = coords1.latitude;
     const lon1 = coords1.longitude;
@@ -49,14 +56,16 @@ const NewFromFriendsCarouselSlider = ({ userData, refreshing, onRefresh }) => {
 
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     const distanceInKm = R * c; // Distance in km
     const distanceInMiles = distanceInKm * 0.621371; // Convert to miles
-  
+
     return distanceInMiles; // Return distance in miles
   };
   // Function to fetch recent visits
@@ -64,14 +73,17 @@ const NewFromFriendsCarouselSlider = ({ userData, refreshing, onRefresh }) => {
     if (!userData?.token) return;
 
     try {
-      const response = await axios.get(`${BASE_URL}/api/users/followinguser/recent-visits`, {
-        headers: {
-          Authorization: `Bearer ${userData.token}`,
+      const response = await axios.get(
+        `${BASE_URL}/api/users/followinguser/recent-visits`,
+        {
+          headers: {
+            Authorization: `Bearer ${userData.token}`,
+          },
         },
-      });
+      );
       setRecentVisits(response.data);
     } catch (error) {
-      console.error('Error fetching recent visits:', error);
+      setRecentVisits([]);
     }
   };
 
@@ -82,18 +94,18 @@ const NewFromFriendsCarouselSlider = ({ userData, refreshing, onRefresh }) => {
     }
   }, [isFocused, refreshing, userData?.token]);
 
-  const handlegotobarDetailScreen = (bar) => {
+  const handlegotobarDetailScreen = bar => {
     dispatch(setSelectedBar(bar));
     navigation.navigate('HomeBarDetails');
   };
 
-  const getPhotoUrl = (photoReference) => {
+  const getPhotoUrl = photoReference => {
     // Replace with your Google Places API key
     const apiKey = 'AIzaSyB5K0ztT_lLhy2FVS_SNWgKS1lQuIBSz4U';
     return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoReference}&key=${apiKey}`;
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     const bar = item;
     const barLocation = {
       latitude: bar.geometry.location.lat,
@@ -126,20 +138,28 @@ const NewFromFriendsCarouselSlider = ({ userData, refreshing, onRefresh }) => {
       <View style={styles.itemContainerCarouselSlider}>
         <TouchableOpacity onPress={() => handlegotobarDetailScreen(item)}>
           <Image
-            source={typeof photoUrl === 'string' ? { uri: photoUrl } : photoUrl}
+            source={typeof photoUrl === 'string' ? {uri: photoUrl} : photoUrl}
             style={styles.imageCarouselSlider}
             resizeMode="cover"
           />
           <View style={styles.textContainerCarouselSlider}>
-            <Text style={styles.movieNameCarouselSlider} numberOfLines={1} ellipsizeMode="tail">
+            <Text
+              style={styles.movieNameCarouselSlider}
+              numberOfLines={1}
+              ellipsizeMode="tail">
               {bar.name}
             </Text>
-            <Text style={styles.textMilesAway} numberOfLines={1} ellipsizeMode="tail">{bar.vicinity}</Text>
-            <Text 
-            style={styles.textMilesAway}
-            >
-            {distance !== null ? `${distance.toFixed(2)} Miles away` : 'Calculating distance...'}
-          </Text>
+            <Text
+              style={styles.textMilesAway}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              {bar.vicinity}
+            </Text>
+            <Text style={styles.textMilesAway}>
+              {distance !== null
+                ? `${distance.toFixed(2)} Miles away`
+                : 'Calculating distance...'}
+            </Text>
             <View style={styles.iconsSetting}>
               <StarRating rating={bar.averageRating || 3.5} />
               <Text style={styles.separator}>|| </Text>
@@ -168,21 +188,38 @@ const NewFromFriendsCarouselSlider = ({ userData, refreshing, onRefresh }) => {
   };
 
   if (!recentVisits.length && refreshing) {
-    return <ActivityIndicator style={styles.loadingIndicator} size="large" color="#fff" />;
+    return (
+      <ActivityIndicator
+        style={styles.loadingIndicator}
+        size="large"
+        color="#fff"
+      />
+    );
   }
 
   return (
     <View style={styles.containerCarouselSlider}>
       <View style={styles.topContainerCarouselSlider}>
         {activeSlide > 0 && (
-          <TouchableOpacity style={[styles.arrowButtonCarouselSlider, styles.prevButtonCarouselSlider]} onPress={handlePrev}>
+          <TouchableOpacity
+            style={[
+              styles.arrowButtonCarouselSlider,
+              styles.prevButtonCarouselSlider,
+            ]}
+            onPress={handlePrev}>
             <Icon name="chevron-left" size={18} color="white" />
           </TouchableOpacity>
         )}
         <TouchableOpacity style={styles.buttonCarouselSlider}>
+          <Icon name="users" size={18} color="white" style={{marginRight: 8}} />
           <Text style={styles.buttonTextCarouselSlider}>From Friends</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.arrowButtonCarouselSlider, styles.nextButtonCarouselSlider]} onPress={handleNext}>
+        <TouchableOpacity
+          style={[
+            styles.arrowButtonCarouselSlider,
+            styles.nextButtonCarouselSlider,
+          ]}
+          onPress={handleNext}>
           <Text style={styles.buttonTextArowCarouselSlider}>
             <Icon name="chevron-right" size={18} color="white" />
           </Text>
@@ -203,7 +240,7 @@ const NewFromFriendsCarouselSlider = ({ userData, refreshing, onRefresh }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   userData: state.user.userData,
 });
 

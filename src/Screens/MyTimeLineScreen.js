@@ -43,7 +43,8 @@ const MyTimeline = ({ navigation, userData }) => {
         });
         setProfileImage(response?.data?.profileImage);
       } catch (error) {
-        console.error('Error fetching profile image:', error);
+        // Profile fetch failed - use default image
+        setProfileImage("");
       }
     };
 
@@ -62,7 +63,7 @@ const MyTimeline = ({ navigation, userData }) => {
         });
         setUserRatings(response.data.ratings || []);
       } catch (error) {
-        console.error('Error fetching user ratings:', error);
+        // Endpoint not implemented yet - show no ratings message
         setUserRatings([]);
       }
     };

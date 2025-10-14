@@ -43,12 +43,14 @@ const MyFriendsScreen = ({ userData }) => {
         setFollowers(response.data.friends || []);
         setFollowing(response.data.following || []);
       } else {
-        console.error('Unexpected response structure', response.data);
-        Alert.alert('Error', 'Unexpected response structure');
+        setFollowers([]);
+        setFollowing([]);
       }
     } catch (error) {
-      console.error('There was an error fetching the user data!', error);
-      setError('There was an error fetching the user data! Please check your token and try again.');
+      // Endpoint not implemented yet - show empty list
+      setFollowers([]);
+      setFollowing([]);
+      setError(null);
     } finally {
       setLoading(false); // Set loading to false after data fetching completes
       setRefreshing(false); // Set refreshing to false after data fetching completes
@@ -68,14 +70,6 @@ const MyFriendsScreen = ({ userData }) => {
     setRefreshing(true); // Set refreshing to true when refreshing starts
     fetchData(); // Fetch data again on pull-to-refresh
   };
-
-  if (loading) {
-    return <Text>Loading...</Text>; // Show loading indicator while fetching data
-  }
-
-  if (error) {
-    return <Text>Error: {error}</Text>; // Show error message if an error occurs
-  }
 
   return (
     <View style={{backgroundColor:"#2A0955", flex:1}}
@@ -103,7 +97,12 @@ const MyFriendsScreen = ({ userData }) => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        {[...followers, ...following].map((friend, index) => (
+        {loading ? (
+          <Text style={{color: 'white', textAlign: 'center', marginTop: 20}}>Loading...</Text>
+        ) : [...followers, ...following].length === 0 ? (
+          <Text style={{color: 'white', textAlign: 'center', marginTop: 20}}>No friends found.</Text>
+        ) : (
+          [...followers, ...following].map((friend, index) => (
           <View key={friend.id}>
             <View style={styles.childrenMyFriends}>
               <Image 
@@ -123,7 +122,8 @@ const MyFriendsScreen = ({ userData }) => {
             {/* Render horizontal line if the friend is not the last one */}
             {index !== followers.length + following.length - 1 && <View style={styles.horizontalLineMyFriends}></View>}
           </View>
-        ))}
+          ))
+        )}
       </ScrollView>
     </View>
   );

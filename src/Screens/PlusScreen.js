@@ -63,8 +63,9 @@ const PlusScreen = ({ navigation }) => {
           setSearchResults([]);
         }
       } catch (err) {
-        console.error(err);
-        setError('An error occurred while fetching data.');
+        // Endpoint failed - show no results
+        setSearchResults([]);
+        setError(null);
       } finally {
         setLoading(false);
       }

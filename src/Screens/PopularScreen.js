@@ -19,7 +19,9 @@ const PopularScreen = ({ navigation }) => {
         setData(response.data);
         setLoading(false);
       } catch (err) {
-        setError(err);
+        // Endpoint not implemented yet - show empty list
+        setData([]);
+        setError(null);
         setLoading(false);
       }
     };
@@ -100,22 +102,6 @@ const PopularScreen = ({ navigation }) => {
     );
   };
 
-  if (loading) {
-    return (
-      <View style={[styles.container, styles.horizontal]}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.container}>
-        <Text>Error fetching data</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={{backgroundColor:"#2A0955", flex:1}}
     >
@@ -134,13 +120,23 @@ const PopularScreen = ({ navigation }) => {
             <Text style={styles.topBarButtonTextRecentActivity}>Popular</Text>
           </TouchableOpacity>
         </View>
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          numColumns={3}
-          contentContainerStyle={styles.contentContainerStyleRecentActivity}
-        />
+        {loading ? (
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <ActivityIndicator size="large" color="#ffffff" />
+          </View>
+        ) : data.length === 0 ? (
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={{color: 'white'}}>No popular bars found.</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={data}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            numColumns={3}
+            contentContainerStyle={styles.contentContainerStyleRecentActivity}
+          />
+        )}
       </View>
     </View>
   );

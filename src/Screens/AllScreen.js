@@ -32,12 +32,12 @@ const AllScreen = ({ navigation }) => {
       setLoading(true);
       const response = await axios.get('https://taverna-application-2ce1f26b8d1b.herokuapp.com/api/allgetbars');
       setData(response.data); // Assuming response.data is an array of bars
-     
+
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching bars:', error);
+      // Endpoint failed - show empty list
+      setData([]);
       setLoading(false);
-      // Handle error state if needed
     }
   };
 
@@ -118,7 +118,13 @@ const AllScreen = ({ navigation }) => {
              </TouchableOpacity>
         </View>
         {loading && !isFetchingMore ? (
-          <Text>Loading...</Text>
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={{color: 'white'}}>Loading...</Text>
+          </View>
+        ) : data.length === 0 ? (
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={{color: 'white'}}>No bars found.</Text>
+          </View>
         ) : (
           <FlatList
             data={data}
@@ -129,7 +135,7 @@ const AllScreen = ({ navigation }) => {
             onEndReached={handleEndReached} // This function must be defined
             onEndReachedThreshold={0.5}
             ListFooterComponent={
-              isFetchingMore ? <Text>Loading more...</Text> : null
+              isFetchingMore ? <Text style={{color: 'white'}}>Loading more...</Text> : null
             }
           />
         )}

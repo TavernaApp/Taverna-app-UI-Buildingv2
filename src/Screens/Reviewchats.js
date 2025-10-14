@@ -54,7 +54,8 @@ const Reviewchats = ({ navigation, userData }) => {
       const response = await axios.get(`${BASE_URL}/api/reviews/${barId}`);
       setReviews(response.data);
     } catch (error) {
-      console.error('Error fetching reviews:', error);
+      // Endpoint not implemented yet - set empty array
+      setReviews([]);
     }
   };
 

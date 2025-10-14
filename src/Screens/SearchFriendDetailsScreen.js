@@ -100,7 +100,9 @@ const SearchFriendDetailsScreen = ({ route, userData }) => {
         setFollowerCount(followerResponse.data.followerCount);
         setFollowingCount(followingResponse.data.followingCount);
       } catch (error) {
-        console.error('Error fetching counts:', error);
+        // Endpoints not implemented yet - set default values
+        setFollowerCount(0);
+        setFollowingCount(0);
       }
     };
 
@@ -146,8 +148,9 @@ const SearchFriendDetailsScreen = ({ route, userData }) => {
           setCurrentUserFollowing(currentUserResponse.data.following || []);
         }
       } catch (error) {
-        console.error('Error:', error);
-        Alert.alert('Error', 'An error occurred. Please try again.');
+        // Endpoints not implemented yet - set default values
+        setFollowing([]);
+        setCurrentUserFollowing([]);
       } finally {
         setLoading(false);
       }

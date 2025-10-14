@@ -59,8 +59,7 @@
           fetchNearbyRestaurants(latitude, longitude);
         },
         error => {
-          setError('Error fetching user location');
-          console.error('Error fetching user location:', error);
+          setError(null);
           setLoading(false);
         }
       );

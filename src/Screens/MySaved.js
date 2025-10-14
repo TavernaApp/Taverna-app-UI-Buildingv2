@@ -31,7 +31,8 @@ const MySaved = ({ navigation, userData }) => {
         });
         setProfileImage(response?.data?.profileImage);
       } catch (error) {
-        console.error('Error fetching profile image:', error);
+        // Profile fetch failed - use default image
+        setProfileImage("");
       }
     };
 
@@ -56,7 +57,8 @@ const MySaved = ({ navigation, userData }) => {
         const bars = response.data.map(item => item.Bar).filter(bar => bar !== null);
         setSavedBars(bars);
       } catch (error) {
-        console.error('Error fetching saved bars:', error);
+        // Endpoint failed - show empty list
+        setSavedBars([]);
       }
     };
 

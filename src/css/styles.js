@@ -537,6 +537,8 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     // backgroundColor: "#7000BE",
     display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
     borderRadius: 6,

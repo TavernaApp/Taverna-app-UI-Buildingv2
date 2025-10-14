@@ -10,6 +10,7 @@ import { BASE_URL } from '@env'; // Correct import for the base URL
 
 const SearchScreenBottomBar = ({ navigation, userData }) => {
   const [text, setText] = useState('');
+  const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,31 +21,22 @@ const SearchScreenBottomBar = ({ navigation, userData }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/users/suggested`, {
+      const response = await axios.get(`${BASE_URL}/api/users`, {
         headers: {
           'Authorization': `Bearer ${userData?.token}`
         }
       });
-      setFilteredUsers(response.data); // Initialize filteredUsers with suggested users
+      // Filter out the current user
+      const users = response.data.filter(user => user.id !== userData?.user?.id);
+      setAllUsers(users);
+      setFilteredUsers(users);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching users:', error);
       setLoading(false);
-      setError('Error fetching users. Please try again.'); // Set error state
-    }
-  };
-
-  const searchUsers = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}/api/users/search?query=${text}`, {
-        headers: {
-          'Authorization': `Bearer ${userData?.token}`
-        }
-      });
-      setFilteredUsers(response.data);
-    } catch (error) {
-      console.error('Error searching users:', error);
-      setError('Error searching users. Please try again.'); // Set error state
+      // Show empty list instead of error
+      setAllUsers([]);
+      setFilteredUsers([]);
     }
   };
 
@@ -53,30 +45,31 @@ const SearchScreenBottomBar = ({ navigation, userData }) => {
   };
 
   const handleUserSelect = (friend) => {
-    navigation.navigate('Profile', { friend });
+    navigation.navigate('SearchFriendDetailsScreen', { friend });
   };
 
   useEffect(() => {
     if (text.trim() === '') {
-      fetchUsers(); // Fetch suggested users if search text is empty
+      setFilteredUsers(allUsers); // Show all users if search is empty
     } else {
-      searchUsers(); // Search users based on text input
+      // Filter users by username or email
+      const filtered = allUsers.filter(user =>
+        user.username?.toLowerCase().includes(text.toLowerCase()) ||
+        user.email?.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredUsers(filtered);
     }
-  }, [text]);
+  }, [text, allUsers]);
 
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+      <LinearGradient
+        colors={['#312537', '#7440AE']}
+        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        start={{ x: 1, y: 1 }}
+        end={{ x: 0, y: 0 }}>
         <ActivityIndicator size="large" color="#ffffff" />
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <Text style={{ color: 'red' }}>{error}</Text>
-      </View>
+      </LinearGradient>
     );
   }
 

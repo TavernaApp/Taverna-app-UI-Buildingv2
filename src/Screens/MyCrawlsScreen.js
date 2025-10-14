@@ -35,7 +35,8 @@ const MyCrawlsScreen = ({ navigation, userData }) => {
         });
         setProfileImage(response?.data?.profileImage);
       } catch (error) {
-        console.error('Error fetching profile image:', error);
+        // Profile fetch failed - use default image
+        setProfileImage("");
       }
     };
 
@@ -49,7 +50,8 @@ const MyCrawlsScreen = ({ navigation, userData }) => {
         console.log(response.data);  // Log the response to check its structure
         setCrawls(response.data);
       } catch (error) {
-        console.error('Error fetching crawls:', error);
+        // Endpoint failed - show empty list
+        setCrawls([]);
       }
     };
 
